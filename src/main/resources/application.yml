@@ -1,6 +1,8 @@
 spring:
   application:
     name: pet-project
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
 
   datasource:
     url: jdbc:postgresql://localhost:5433/greenleaf_oasis
@@ -14,4 +16,4 @@ spring:
     show-sql: true
     properties:
       hibernate:
-        format_sql: true
+        ddl-auto: validate
