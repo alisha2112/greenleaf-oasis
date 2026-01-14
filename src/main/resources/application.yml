@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: pet-project
+
+  datasource:
+    url: jdbc:postgresql://localhost:5433/greenleaf_oasis
+    username: alina
+    password: tomchak
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
