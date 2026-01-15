@@ -6,4 +6,5 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
 
     <include file="db/changelog/changeset/create-initial-tables.sql"/>
+    <include file="db/changelog/changeset/add-audit-columns.sql"/>
 </databaseChangeLog>
