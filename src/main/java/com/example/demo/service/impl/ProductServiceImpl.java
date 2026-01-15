@@ -1,18 +1,19 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.dto.ProductRequestDto;
-import com.example.demo.dto.ProductResponseDto;
+import com.example.demo.dto.product.ProductRequestDto;
+import com.example.demo.dto.product.ProductResponseDto;
 import com.example.demo.entity.Category;
 import com.example.demo.entity.Product;
 import com.example.demo.mapper.ProductMapper;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.service.ProductService;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Service
 @RequiredArgsConstructor
@@ -38,10 +39,27 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional
-    public List<ProductResponseDto> getAllProducts() {
-        return productRepository.findAll().stream()
-                .map(productMapper::toDto)
-                .toList();
+    @Transactional(readOnly = true)
+    public Page<ProductResponseDto> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable)
+                .map(productMapper::toDto);
     }
+
+    @Override
+    public ProductResponseDto getProductById(Long id) {
+        return productRepository.findById(id)
+                .map(productMapper::toDto)
+                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+    }
+
+    @Override
+    @Transactional
+    public void deleteProduct(@PathVariable Long id) {
+        if (!productRepository.existsById(id)) {
+            throw new RuntimeException("Product not found with id: " + id);
+        }
+        productRepository.deleteById(id);
+    }
+
+
 }
