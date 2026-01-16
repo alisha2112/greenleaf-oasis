@@ -1,6 +1,10 @@
 spring:
   application:
     name: pet-project
+    security:
+      jwt:
+        secret-key: 53GPIIKU5zROcVta0M8dT58BRD7i2FgnIRFFJWrNLDUwor8w8VpsHYD/HWWanH69
+        expiration: 86400000
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
 
@@ -17,3 +21,4 @@ spring:
     properties:
       hibernate:
         ddl-auto: validate
+
