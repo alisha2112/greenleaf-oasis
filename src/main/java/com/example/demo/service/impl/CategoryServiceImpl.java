@@ -3,6 +3,7 @@ package com.example.demo.service.impl;
 import com.example.demo.dto.category.CategoryRequestDto;
 import com.example.demo.dto.category.CategoryResponseDto;
 import com.example.demo.entity.Category;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.mapper.CategoryMapper;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.service.CategoryService;
@@ -40,14 +41,14 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryResponseDto getCategoryById(Long id) {
         return categoryRepository.findById(id)
                 .map(categoryMapper::toDto)
-                .orElseThrow(() -> new RuntimeException("Category not found with id:" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id:" + id));
     }
 
     @Override
     @Transactional
     public void deleteCategory(Long id) {
         if (!categoryRepository.existsById(id)) {
-            throw new RuntimeException("Category not found with id: " + id);
+            throw new ResourceNotFoundException("Category not found with id: " + id);
         }
         categoryRepository.deleteById(id);
     }

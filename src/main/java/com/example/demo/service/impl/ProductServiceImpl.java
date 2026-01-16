@@ -4,6 +4,7 @@ import com.example.demo.dto.product.ProductRequestDto;
 import com.example.demo.dto.product.ProductResponseDto;
 import com.example.demo.entity.Category;
 import com.example.demo.entity.Product;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.mapper.ProductMapper;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.ProductRepository;
@@ -49,14 +50,14 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponseDto getProductById(Long id) {
         return productRepository.findById(id)
                 .map(productMapper::toDto)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
     }
 
     @Override
     @Transactional
-    public void deleteProduct(@PathVariable Long id) {
+    public void deleteProduct(Long id) {
         if (!productRepository.existsById(id)) {
-            throw new RuntimeException("Product not found with id: " + id);
+            throw new ResourceNotFoundException("Product not found with id: " + id);
         }
         productRepository.deleteById(id);
     }
