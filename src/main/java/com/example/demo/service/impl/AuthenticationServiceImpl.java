@@ -10,13 +10,16 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.security.JwtService;
 import com.example.demo.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -26,6 +29,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public AuthenticationResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.email())) {
+            log.warn("Registration failed: user with email {} already exists", request.email());
             throw new UserAlreadyExistsException("User with email " + request.email() + " already exists");
         }
 
@@ -39,6 +43,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         userRepository.save(user);
 
+        log.info("New user registered successfully: {}", user.getEmail());
+
         var jwtToken = jwtService.generateToken(user);
 
         return new AuthenticationResponse(jwtToken);
@@ -46,15 +52,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.email(),
-                        request.password()
-                )
-        );
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.email(),
+                            request.password()
+                    )
+            );
+        } catch (AuthenticationException e) {
+            log.error("Authentication failed for email: {}", request.email());
+            throw e;
+        }
 
         var user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+        log.info("User authenticated: {}", user.getEmail());
 
         var jwtToken = jwtService.generateToken(user);
 
