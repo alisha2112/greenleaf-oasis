@@ -1,4 +1,4 @@
-package com.example.demo.dto.category;
+package com.example.demo.dto;
 
 public record AuthenticationResponse(
         String token

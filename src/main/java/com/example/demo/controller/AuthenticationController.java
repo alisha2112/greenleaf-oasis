@@ -1,7 +1,8 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.category.AuthenticationResponse;
-import com.example.demo.dto.category.RegisterRequest;
+import com.example.demo.dto.AuthenticationRequest;
+import com.example.demo.dto.AuthenticationResponse;
+import com.example.demo.dto.RegisterRequest;
 import com.example.demo.service.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,5 +23,12 @@ public class AuthenticationController {
             @Valid @RequestBody RegisterRequest request
             ) {
         return ResponseEntity.ok(authenticationService.register(request));
+    }
+
+    @PostMapping("/authenticate")
+    public ResponseEntity<AuthenticationResponse> authenticate(
+            @Valid @RequestBody AuthenticationRequest request
+            ) {
+        return ResponseEntity.ok(authenticationService.authenticate(request));
     }
 }
