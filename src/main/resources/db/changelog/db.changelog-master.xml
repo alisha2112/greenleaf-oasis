@@ -8,4 +8,5 @@
     <include file="db/changelog/changeset/create-initial-tables.sql"/>
     <include file="db/changelog/changeset/add-audit-columns.sql"/>
     <include file="db/changelog/changeset/add-role-column-to-users.sql"/>
+    <include file="db/changelog/changeset/create-cart-items-table.sql"/>
 </databaseChangeLog>
