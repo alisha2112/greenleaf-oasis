@@ -58,6 +58,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    @Transactional
     public ShoppingCartDto getCart() {
         User user = getCurrentUser();
         List<CartItem> items = cartItemRepository.findByUser(user);
@@ -72,6 +73,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    @Transactional
     public ShoppingCartDto removeItem(Long cartItemId) {
         User user = getCurrentUser();
         CartItem item = cartItemRepository.findById(cartItemId)
