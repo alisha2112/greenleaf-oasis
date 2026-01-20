@@ -6,7 +6,7 @@ import com.example.demo.entity.Product;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", builder = @org.mapstruct.Builder(disableBuilder = true))
 public interface ProductMapper {
 
     @Mapping(source = "category.name", target = "categoryName")
