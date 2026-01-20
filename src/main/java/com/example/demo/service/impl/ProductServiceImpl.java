@@ -9,12 +9,15 @@ import com.example.demo.mapper.ProductMapper;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.service.ProductService;
+import com.example.demo.specification.ProductSpecification;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
+
+import java.math.BigDecimal;
 
 @Service
 @RequiredArgsConstructor
@@ -41,8 +44,15 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ProductResponseDto> getAllProducts(Pageable pageable) {
-        return productRepository.findAll(pageable)
+    public Page<ProductResponseDto> getAllProducts(
+            BigDecimal minPrice,
+            BigDecimal maxPrice,
+            Long categoryId,
+            String search,
+            Pageable pageable) {
+        Specification<Product> spec = ProductSpecification.filterProducts(minPrice, maxPrice, categoryId, search);
+
+        return productRepository.findAll(spec, pageable)
                 .map(productMapper::toDto);
     }
 
